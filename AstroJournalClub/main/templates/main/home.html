@@ -37,11 +37,21 @@
                             </div>
 
                             <div class="col-9">
-                        <span v-for="(author, index) in pub.authors">
-                            <span v-html="author"></span>
-                            <span v-if="index+1 < pub.authors.length">, </span>
-                        </span>
+                                <p><span v-for="(author, index) in pub.authors">
+                                    <span v-html="author"></span>
+                                    <span v-if="index+1 < pub.authors.length">, </span>
+                                </span></p>
+
+                                <p>
+                                    ArXiV #:
+                                    <a v-bind:href="'http://arxiv.org/abs/' + pub.identifier">
+                                        [[ pub.identifier ]]
+                                    </a>
+                                    (<a v-bind:href="'http://arxiv.org/pdf/' + pub.identifier">PDF</a>,
+                                    <a v-bind:href="'http://arxiv.org/ps/' + pub.identifier">PS</a>,
+                                    <a v-bind:href="'http://adsabs.harvard.edu/cgi-bin/bib_query?' + pub.identifier">ADS</a>)
                                 </p>
+
                                 Originally posted [[ pub.date ]]
                             </div>
 
