@@ -1,0 +1,13 @@
+.card {
+    margin: 10px;
+}
+
+.card-header {
+    background-color: #d8ceb6;
+    font-size: 1em;
+}
+
+.card-body {
+    background-color: #eeead9;
+    font-size: .8em;
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+    <title>AstroJournalClub</title>
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap-datepicker.min.css" %}">
+    <script src="{% static "js/jquery-3.5.1.min.js" %}"></script>
+    <script src="{% static "js/vue.js" %}"></script>
+    <script src="{% static "js/vue-resource.js" %}"></script>
+    <script src="{% static "js/bootstrap-datepicker.min.js" %}"></script>
+</head>
+<body>
+
+{% include "main/nav.html" %}
+
+<div id="main" class="container">
+    <div id="alert-error"></div>
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+    <h3>Publications on {{ date|date:"Y-m-d" }}</h3>
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-9">
+            <div id="app">
+
+                <div class="card" v-for="pub in publications">
+                    <div class="card-body">
+
+                        <div class="card-header">
+                            <h5>[astro-ph #[[ pub.number ]]] [[ pub.title ]]</h5>
+                        </div>
+
+                        <div class="row card-text">
+
+                            <div class="col-2">
+                                {% if user.is_authenticated %}
+                                    <p>[[ pub.votes ]] votes.</p>
+                                    <button v-if="!pub.has_voted" class="button btn-sm btn-primary"
+                                            v-on:click="vote(pub, +1)">Vote
+                                    </button>
+                                    <button v-if="pub.has_voted" class="button btn-sm btn-primary"
+                                            v-on:click="vote(pub, -1)">Unvote
+                                    </button>
+                                {% else %}
+                                    <p>
+                                        <a href="{% url 'accounts:login' %}">Login</a> to vote.
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-9">
+                        <span v-for="(author, index) in pub.authors">
+                            <span v-html="author"></span>
+                            <span v-if="index+1 < pub.authors.length">, </span>
+                        </span>
+                                </p>
+                                Originally posted [[ pub.date ]]
+                            </div>
+
+                            <div class="col-1">
+
+                            </div>
+
+                        </div>
+
+                        <p v-html="pub.summary"></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div id="datepicker" data-date-format='yyyy-mm-dd'
+                 data-date="{{ date|date:"Y/m/d" }}"
+                 data-date-today-highlight="true"></div>
+        </div>
+    </div>
+
+    <script>
+        calendar = $('#datepicker').datepicker()
+            .on('changeDate', (event) => {
+                $(location).attr('href', '/' + event.format('yyyy/mm/dd') + '/');
+            });
+        let publications = {{ publications|safe }};
+    </script>
+    <script src="{% static 'js/home.js' %}"></script>
+
+{% endblock %}
