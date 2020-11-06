@@ -35,13 +35,11 @@
                                     </p>
                                 {% endif %}
                             </div>
-
                             <div class="col-9">
                                 <p><span v-for="(author, index) in pub.authors">
-                                    <span v-html="author"></span>
-                                    <span v-if="index+1 < pub.authors.length">, </span>
-                                </span></p>
-
+                                        <span v-html="author"></span>
+                                        <span v-if="index+1 < pub.authors.length">, </span>
+                                    </span></p>
                                 <p>
                                     ArXiV #:
                                     <a v-bind:href="'http://arxiv.org/abs/' + pub.identifier">
@@ -52,27 +50,30 @@
                                     <a v-bind:href="'http://adsabs.harvard.edu/cgi-bin/bib_query?' + pub.identifier">ADS</a>)
                                 </p>
 
-                                Originally posted [[ pub.date ]]
+                                <p><small>Originally posted [[ pub.date ]]</small></p>
                             </div>
 
-                            <div class="col-1">
+                            <div class="col-1 pub-main">
 
                             </div>
 
                         </div>
 
                         <p v-html="pub.summary"></p>
-
                     </div>
+
+
+
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-3">
-            <div id="datepicker" data-date-format='yyyy-mm-dd'
-                 data-date="{{ date|date:"Y/m/d" }}"
-                 data-date-today-highlight="true"></div>
-        </div>
+    <div class="col-3">
+        <div id="datepicker" data-date-format='yyyy-mm-dd'
+             data-date="{{ date|date:"Y/m/d" }}"
+             data-date-today-highlight="true"></div>
+    </div>
     </div>
 
     <script>

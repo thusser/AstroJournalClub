@@ -1,3 +1,7 @@
+body {
+    background-color: #e2ddcd;
+}
+
 .card {
     margin: 10px;
 }
@@ -10,4 +14,9 @@
 .card-body {
     background-color: #eeead9;
     font-size: .8em;
+}
+
+.card-text {
+    margin: auto;
+    background-color: #e2ddcd;
 }
