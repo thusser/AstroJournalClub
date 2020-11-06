@@ -54,7 +54,9 @@
                             </div>
 
                             <div class="col-1 pub-main">
-
+                                <span v-for="cat in pub.categories">
+                                    [[ cat.replace('astro-ph.', '') ]]
+                                </span>
                             </div>
 
                         </div>
