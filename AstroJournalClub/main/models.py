@@ -38,7 +38,7 @@ class Publication(models.Model):
     date = models.DateField('Date of submission.')
     number = models.IntegerField('arXiv post number on day')
     authors = models.ManyToManyField(Author)
-    title = models.CharField('Title of publication', max_length=100)
+    title = models.CharField('Title of publication', max_length=200)
     url = models.CharField('arXiv URL', max_length=100)
     summary = models.TextField('Summary')
     categories = models.ManyToManyField(Category)
