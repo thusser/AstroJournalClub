@@ -20,3 +20,12 @@ body {
     margin: auto;
     background-color: #e2ddcd;
 }
+
+.card-text > div {
+    padding: 1em;
+}
+
+.votes {
+    font-size: 3em;
+    font-weight: bold;
+}

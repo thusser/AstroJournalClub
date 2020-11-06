@@ -20,9 +20,9 @@
 
                         <div class="row card-text">
 
-                            <div class="col-2">
+                            <div class="col-2 text-center">
                                 {% if user.is_authenticated %}
-                                    <p>[[ pub.votes ]] votes.</p>
+                                    <p><span class="votes">[[ pub.votes ]]</span><br>votes</p>
                                     <button v-if="!pub.has_voted" class="button btn-sm btn-primary"
                                             v-on:click="vote(pub, +1)">Vote
                                     </button>
