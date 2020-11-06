@@ -7,7 +7,7 @@ from django.db import models
 class Category(models.Model):
     """Category for publications."""
 
-    name = models.CharField('Category name', max_length=15, db_index=True)
+    name = models.CharField('Category name', max_length=20, db_index=True)
 
     def __str__(self):
         return self.name
