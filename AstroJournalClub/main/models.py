@@ -53,11 +53,11 @@ class Publication(models.Model):
             'url': self.url,
             'summary': self.summary,
             'categories': [str(cat) for cat in self.categories.all()],
+            'authors': [str(author) for author in self.authors.all()]
         }
 
         # private stuff
         if user.is_authenticated:
-            data['authors'] = [str(author) for author in self.authors.all()]
             data['votes'] = self.vote_set.count()
             data['has_voted'] = any([user == v.user for v in self.vote_set.all()])
 
