@@ -4,7 +4,8 @@ var app = new Vue({
     data: {
         message: 'Hello Vue2!',
         publications: [],
-        categoryFilter: []
+        categoryFilter: ['astro-ph', 'astro-ph.CO', 'astro-ph.EP', 'astro-ph.GA',
+            'astro-ph.HE', 'astro-ph.IM', 'astro-ph.SR']
     },
     created: function () {
         // take publications
@@ -28,7 +29,7 @@ var app = new Vue({
         },
         toggleAstroPhFilter: function () {
             let checked = this.categoryFilter.includes('astro-ph');
-            let categories = ['co', 'ep', 'ga', 'he', 'im', 'sr'];
+            let categories = ['CO', 'EP', 'GA', 'HE', 'IM', 'SR'];
             for (let c in categories) {
                 let cat = 'astro-ph.' + categories[c];
                 if (checked && !this.categoryFilter.includes(cat)) {
@@ -41,16 +42,21 @@ var app = new Vue({
                         });
                 }
             }
-            this.applyFilter();
-        },
-        applyFilter: function () {
-            console.log('filter');
         }
     },
     computed: {
         filteredPublications: function () {
+            let filters = this.categoryFilter;
             return this.publications.filter(function (pub) {
-                return pub.title.includes('Disk');
+                // loop all category filters
+                for (let i in filters) {
+                    if (pub.categories.includes(filters[i])) {
+                        // filter in publication's list of categories
+                        return true;
+                    }
+                }
+                // nothing found
+                return false;
             })
         }
     }
