@@ -11,7 +11,7 @@
         <div class="col-9">
             <div id="app">
 
-                <div class="card" v-for="pub in publications">
+                <div class="card" v-for="pub in publications" v-bind:key="pub.identifier">
                     <div class="card-body">
 
                         <div class="card-header">
