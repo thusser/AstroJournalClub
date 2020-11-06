@@ -3,7 +3,8 @@ var app = new Vue({
     el: '#app',
     data: {
         message: 'Hello Vue2!',
-        publications: []
+        publications: [],
+        categoryFilter: []
     },
     created: function () {
         // take publications
@@ -24,6 +25,33 @@ var app = new Vue({
             }, function (response) {
                 alert("Error on vote");
             });
+        },
+        toggleAstroPhFilter: function () {
+            let checked = this.categoryFilter.includes('astro-ph');
+            let categories = ['co', 'ep', 'ga', 'he', 'im', 'sr'];
+            for (let c in categories) {
+                let cat = 'astro-ph.' + categories[c];
+                if (checked && !this.categoryFilter.includes(cat)) {
+                    this.categoryFilter.push(cat);
+                }
+                if (!checked && this.categoryFilter.includes(cat)) {
+                    this.categoryFilter = this.categoryFilter.filter(
+                        function (value, index, arr) {
+                            return value != cat;
+                        });
+                }
+            }
+            this.applyFilter();
+        },
+        applyFilter: function () {
+            console.log('filter');
+        }
+    },
+    computed: {
+        filteredPublications: function () {
+            return this.publications.filter(function (pub) {
+                return pub.title.includes('Disk');
+            })
         }
     }
 })
