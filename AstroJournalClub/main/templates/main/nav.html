@@ -7,11 +7,21 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item {% if request.resolver_match.url_name != "next" %}active{% endif %}">
+                <a class="nav-link" href="{% url 'main:home' %}">
+                    Home
+                    {% if request.resolver_match.url_name != "next" %}
+                        <span class="sr-only">(current)</span>
+                    {% endif %}
+                </a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/next/">Next <span class="sr-only">(current)</span></a>
+            <li class="nav-item {% if request.resolver_match.url_name == "next" %}active{% endif %}">
+                <a class="nav-link" href="{% url 'main:next' %}">
+                    Next meeting
+                    {% if request.resolver_match.url_name == "next" %}
+                        <span class="sr-only">(current)</span>
+                    {% endif %}
+                </a>
             </li>
         </ul>
 

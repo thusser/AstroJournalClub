@@ -68,8 +68,11 @@ def next_meeting(request):
             last_meeting_day -= timedelta(days=1)
     last_meeting = datetime.combine(last_meeting_day, end)
 
+    # and next meeting?
+    next_meeting = last_meeting + timedelta(days=7)
+
     # get data
     data = [pub.to_dict(request.user) for pub in Publication.objects.annotate(vote_count=Count('vote')).filter(date__gt=last_meeting, vote_count__gt=0)]
 
     # render page
-    return render(request, 'main/home.html', context={'date': now, 'publications': json.dumps(data)})
+    return render(request, 'main/next.html', context={'date': next_meeting, 'publications': json.dumps(data)})

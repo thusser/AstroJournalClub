@@ -2,6 +2,10 @@ body {
     background-color: #eeead9;
 }
 
+.container {
+    margin-top: 1em;
+}
+
 .card {
     margin: 10px;
 }
