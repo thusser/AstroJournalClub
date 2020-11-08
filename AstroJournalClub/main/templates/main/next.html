@@ -6,14 +6,6 @@
     <h3>Next journal club on {{ date|date:"Y-m-d" }}</h3>
     <hr class="my-4">
 
-    <div class="row">
-        <div class="col-9">
-            {% include "main/publication_list.html" %}
-        </div>
-        <div class="col-3">
-            <div id="datepicker" data-date-format='yyyy-mm-dd' data-date="{{ date|date:"Y/m/d" }}"
-                 data-date-today-highlight="true"></div>
-        </div>
-    </div>
+    {% include "main/publication_list.html" %}
 
 {% endblock %}

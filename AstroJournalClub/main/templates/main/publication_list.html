@@ -134,10 +134,6 @@
 </div>
 
 <script>
-    calendar = $('#datepicker').datepicker()
-        .on('changeDate', (event) => {
-            $(location).attr('href', '/' + event.format('yyyy/mm/dd') + '/');
-        });
     let publications = {{ publications|safe }};
 </script>
 <script src="{% static 'js/publication_list.js' %}"></script>
