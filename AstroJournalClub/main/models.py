@@ -1,3 +1,5 @@
+from typing import List
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -37,7 +39,6 @@ class Publication(models.Model):
     identifier = models.CharField('arXiv identifier', max_length=10, db_index=True)
     date = models.DateField('Date of submission.')
     number = models.IntegerField('arXiv post number on day')
-    authors = models.ManyToManyField(Author)
     title = models.CharField('Title of publication', max_length=200)
     url = models.CharField('arXiv URL', max_length=100)
     summary = models.TextField('Summary')
@@ -53,7 +54,7 @@ class Publication(models.Model):
             'url': self.url,
             'summary': self.summary,
             'categories': [str(cat) for cat in self.categories.all()],
-            'authors': [str(author) for author in self.authors.all()]
+            'authors': [str(author) for author in self.authors]
         }
 
         # private stuff
@@ -63,3 +64,31 @@ class Publication(models.Model):
 
         # finished
         return data
+
+    @property
+    def authors(self) -> List[Author]:
+        """Return list of authors in order."""
+
+        return [pa.author for pa in PublicationAuthor.objects.filter(publication=self).order_by('order')]
+
+    def add_author(self, order: int, author: Author):
+        """Add a new author to this publication.
+
+        Args:
+            order: Order of new author in this publication.
+            author: Author to add.
+        """
+
+        # get or create connection
+        PublicationAuthor.objects.get_or_create(publication=self, order=order, author=author)
+
+
+class PublicationAuthor(models.Model):
+    """Authors for a publication."""
+
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE, db_index=True)
+    order = models.IntegerField('Order of authors in this publication.')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, db_index=True)
+
+    class Meta:
+        db_table = "main_publication_authors"

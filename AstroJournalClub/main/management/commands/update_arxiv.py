@@ -37,6 +37,6 @@ class Command(BaseCommand):
 
             # extract authors
             tree = html.fromstring(entry.author)
-            for a in tree.xpath('//a'):
+            for order, a in enumerate(tree.xpath('//a')):
                 author, _ = models.Author.objects.get_or_create(name=a.text, defaults={'url': a.get('href')})
-                publication.authors.add(author)
+                publication.add_author(order, author)
