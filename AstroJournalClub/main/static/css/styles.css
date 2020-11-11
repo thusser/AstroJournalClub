@@ -1,5 +1,18 @@
 body {
-    background-color: #eeead9;
+    background-color: #eeeeee;
+}
+
+.navbar .navbar-brand {
+    color: white;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #dddddd;
+}
+
+.navbar .navbar-nav .active .nav-link {
+    color: white;
+    font-weight: bold;
 }
 
 .container {
@@ -8,21 +21,22 @@ body {
 
 .card {
     margin: 10px;
+    border: 2px solid #d8d8d8;
 }
 
 .card-header {
-    background-color: #d8ceb6;
+    background-color: #d8d8d8;
     font-size: 1em;
 }
 
 .card-body {
-    background-color: #eeead9;
+    background-color: #eeeeee;
     font-size: .8em;
 }
 
 .card-text {
     margin: auto;
-    background-color: #e2ddcd;
+    background-color: #e2e2e2;
 }
 
 .card-text > div {
