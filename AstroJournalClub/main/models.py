@@ -30,7 +30,7 @@ class Publication(models.Model):
     """A publication in arxiv."""
 
     identifier = models.CharField('arXiv identifier', max_length=10, db_index=True)
-    date = models.DateField('Date of submission.')
+    date = models.DateField('Date of submission.', db_index=True)
     number = models.IntegerField('arXiv post number on day')
     title = models.CharField('Title of publication', max_length=200)
     url = models.CharField('arXiv URL', max_length=100)
