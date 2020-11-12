@@ -6,7 +6,7 @@ import json
 from datetime import datetime, date, time, timedelta
 from django.urls import reverse
 
-from AstroJournalClub.main.models import Publication, Vote
+from AstroJournalClub.main.models import Publication, Vote, Schedule, Meeting
 
 
 def home(request):
@@ -34,11 +34,16 @@ def vote(request, year, month, day, identifier):
     # get publication
     pub = Publication.objects.get(date=date, identifier=identifier)
 
-    # vote up or down?
-    if any([request.user == v.user for v in pub.vote_set.all()]):
-        Vote.objects.filter(publication=pub, user=request.user).delete()
-    else:
-        Vote.objects.get_or_create(publication=pub, user=request.user)
+    # get next meeting
+    meeting = Schedule.all_next_meeting()
+
+    # got any?
+    if meeting is not None:
+        # vote up or down?
+        if any([request.user == v.user for v in pub.vote_set.all()]):
+            Vote.objects.filter(publication=pub, user=request.user, meeting=meeting).delete()
+        else:
+            Vote.objects.get_or_create(publication=pub, user=request.user, meeting=meeting)
 
     # return number of votes and has_voted
     return JsonResponse({'votes': pub.vote_set.count(),
@@ -46,33 +51,22 @@ def vote(request, year, month, day, identifier):
 
 
 def next_meeting(request):
-    # hardcoded for now
-    meet_day = 2
-    start = time(hour=13, minute=30, second=00)
-    end = time(hour=14, minute=00, second=00)
+    # get next meeting time
+    dt_next, _ = Schedule.all_next_meeting_time()
 
-    # get end of last meeting
-    now = datetime.now()
-    if now.weekday() == meet_day:
-        # today is meeting!
-        if now.time() < end:
-            # before meeting, take last 7 days
-            last_meeting_day = now.date() - timedelta(days=7)
-        else:
-            # after meeting, start today
-            last_meeting_day = now.date()
-    else:
-        # go back in time until meeting day
-        last_meeting_day = now.date()
-        while last_meeting_day.weekday() != meet_day:
-            last_meeting_day -= timedelta(days=1)
-    last_meeting = datetime.combine(last_meeting_day, end)
+    # got one?
+    data = []
+    if dt_next is not None:
+        # query publications
+        pubs = Publication.objects.annotate(vote_count=Count('vote')).filter(vote_count__gt=0)
 
-    # and next meeting?
-    next_meeting = last_meeting + timedelta(days=7)
+        # get date of last meeting
+        last_meeting = Meeting.objects.order_by('-time').first()
+        if last_meeting is not None:
+            pubs.filter(date__gt=last_meeting.time)
 
-    # get data
-    data = [pub.to_dict(request.user) for pub in Publication.objects.annotate(vote_count=Count('vote')).filter(date__gt=last_meeting, vote_count__gt=0)]
+        # get data
+        data = [pub.to_dict(request.user) for pub in pubs]
 
     # render page
-    return render(request, 'main/next.html', context={'date': next_meeting, 'publications': json.dumps(data)})
+    return render(request, 'main/next.html', context={'date': dt_next, 'publications': json.dumps(data)})

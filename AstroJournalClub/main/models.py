@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from django.contrib.auth.models import User
@@ -23,14 +24,6 @@ class Author(models.Model):
 
     def __str__(self):
         return '<a href="%s">%s</a' % (self.url, self.name)
-
-
-class Vote(models.Model):
-    """A vote for a publication."""
-
-    publication = models.ForeignKey('Publication', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    time = models.DateTimeField('Time of vote', auto_now_add=True)
 
 
 class Publication(models.Model):
@@ -92,3 +85,86 @@ class PublicationAuthor(models.Model):
 
     class Meta:
         db_table = "main_publication_authors"
+
+
+class Schedule(models.Model):
+    """A schedule for the meetings."""
+
+    start = models.DateField('First day of schedule.')
+    end = models.DateField('Last day of schedule.', default='2100-12-31')
+    time = models.TimeField('Starting time of meeting.')
+    duration = models.FloatField('Duration of meeting in hours.')
+    frequency = models.CharField('Frequency of schedule in iCal notation.', max_length=50)
+
+    def __str__(self):
+        # basic string (weekday at time)
+        s = self.start.strftime('%A') + ' at ' + self.time.strftime('%H:%M')
+
+        # finished?
+        if self.end < datetime.date.today():
+            s += ' (finished)'
+        elif self.start > datetime.date.today():
+            s += ' (starts on %s)' % self.start.strftime('%y-%m-%d')
+
+        # finished
+        return s
+
+    def next_meeting_time(self):
+        """Returns time of next meeting."""
+
+        # check now against end of schedule
+        now = datetime.datetime.utcnow()
+        if datetime.datetime.combine(self.end, self.time) < now:
+            return None
+
+        # get date and time of first meeting
+        dt = datetime.datetime.combine(self.start, self.time)
+
+        # go forward until we're in the future
+        while dt < now:
+            if self.frequency.lower() == 'weekly':
+                dt += datetime.timedelta(weeks=1)
+            else:
+                # unknown frequency format
+                return None
+
+        # found date
+        return dt
+
+    @staticmethod
+    def all_next_meeting_time():
+        """Returns the next meeting time for all schedules in database."""
+
+        # get next times from all schedules
+        next_times = list(filter(
+            lambda x: x[0] is not None, [(s.next_meeting_time(), s) for s in Schedule.objects.all()]
+        ))
+
+        # got any?
+        return None if len(next_times) == 0 else min([t for t in next_times])
+
+    @staticmethod
+    def all_next_meeting():
+        """Returns a Meeting object for the next meeting for all schedules."""
+
+        # get next meeting time and its schedule
+        dt, schedule = Schedule.all_next_meeting_time()
+
+        # get or create meeting
+        return Meeting.objects.get_or_create(schedule=schedule, time=dt)[0]
+
+
+class Meeting(models.Model):
+    """A single meeting"""
+
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    time = models.DateTimeField('Date and time of meeting.')
+
+
+class Vote(models.Model):
+    """A vote for a publication."""
+
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_index=True)
+    time = models.DateTimeField('Time of vote.', auto_now_add=True)
