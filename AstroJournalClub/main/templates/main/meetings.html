@@ -5,14 +5,15 @@
 
     {% if date is None %}
 
-        <h3>No upcoming meeting found</h3>
+        <h3>No meeting found</h3>
 
     {% else %}
 
-        <h3>Next journal club on {{ date|date:"Y-m-d" }} at {{ date|date:"H:i" }}</h3>
+        <h3>Journal club on {{ date|date:"Y-m-d" }} at {{ date|date:"H:i" }}</h3>
         <hr class="my-4">
 
         {% include "main/publication_list.html" %}
+
 
     {% endif %}
 

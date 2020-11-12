@@ -3,33 +3,35 @@ from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 import json
-from datetime import datetime, date, time, timedelta
+import datetime
 from django.urls import reverse
 
 from AstroJournalClub.main.models import Publication, Vote, Schedule, Meeting
 
 
 def home(request):
-    now = datetime.now()
-    response = redirect(reverse('main:publications', args=(now.year, now.month, now.day)))
+    response = redirect(reverse('main:publications'))
     return response
 
 
-def publications(request, year, month, day):
+def publications(request, year=None, month=None, day=None):
     # build date
-    date = datetime(year=year, month=month, day=day)
+    if year is None or month is None or day is None:
+        date = datetime.date.today()
+    else:
+        date = datetime.date(year=year, month=month, day=day)
 
     # get data
     data = [pub.to_dict(request.user) for pub in Publication.objects.filter(date=date)]
 
     # render page
-    return render(request, 'main/home.html', context={'date': date, 'publications': json.dumps(data)})
+    return render(request, 'main/publications.html', context={'date': date, 'publications': json.dumps(data)})
 
 
 @login_required
 def vote(request, year, month, day, identifier):
     # build date
-    date = datetime(year=year, month=month, day=day)
+    date = datetime.datetime(year=year, month=month, day=day)
 
     # get publication
     pub = Publication.objects.get(date=date, identifier=identifier)
@@ -50,23 +52,35 @@ def vote(request, year, month, day, identifier):
                          'has_voted': any([request.user == v.user for v in pub.vote_set.all()])})
 
 
-def next_meeting(request):
-    # get next meeting time
-    dt_next, _ = Schedule.all_next_meeting_time()
+def meetings(request, year: int = None, month: int = None, day: int = None):
+    # build date
+    if year is None or month is None or day is None:
+        date = Schedule.all_next_meeting_time()[0].date()
+    else:
+        date = datetime.date(year=year, month=month, day=day)
 
-    # got one?
-    data = []
-    if dt_next is not None:
-        # query publications
-        pubs = Publication.objects.annotate(vote_count=Count('vote')).filter(vote_count__gt=0)
+    # get meetings on given date
+    start = datetime.datetime.combine(date, datetime.time(hour=0, minute=0, second=0))
+    end = datetime.datetime.combine(date, datetime.time(hour=23, minute=59, second=59))
 
-        # get date of last meeting
-        last_meeting = Meeting.objects.order_by('-time').first()
-        if last_meeting is not None:
-            pubs.filter(date__gt=last_meeting.time)
+    # we just assume to have only one meeting per day
+    meeting = Meeting.objects.filter(time__gte=start, time__lte=end).first()
 
-        # get data
-        data = [pub.to_dict(request.user) for pub in pubs]
+    # got a meeting?
+    if meeting is None:
+        date = None
+        publications = []
+
+    else:
+
+        # get publications with votes on that meeting
+        pubs = Publication.objects\
+            .annotate(vote_count=Count('vote'))\
+            .filter(vote_count__gt=0, vote__meeting=meeting)
+
+        # store
+        publications = [pub.to_dict(request.user) for pub in pubs]
+        date = meeting.time
 
     # render page
-    return render(request, 'main/next.html', context={'date': dt_next, 'publications': json.dumps(data)})
+    return render(request, 'main/meetings.html', context={'date': date, 'publications': json.dumps(publications)})
