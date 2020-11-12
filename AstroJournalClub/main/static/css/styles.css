@@ -2,6 +2,10 @@ body {
     background-color: #eeeeee;
 }
 
+[v-cloak] {
+    display: none;
+}
+
 .navbar .navbar-brand {
     color: white;
 }
