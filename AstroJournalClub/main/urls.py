@@ -22,8 +22,7 @@ app_name = "main"
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('meetings/', views.meetings, name='meetings'),
-    path('meetings/<int:year>-<int:month>-<int:day>/', views.meetings, name='meetings'),
+    path('meeting/', views.meeting, name='meeting'),
     path('publications/', views.publications, name='publications'),
     path('publications/<int:year>-<int:month>-<int:day>/', views.publications, name='publications'),
     path('api/<int:year>-<int:month>-<int:day>/<str:identifier>/vote', views.vote, name='vote')

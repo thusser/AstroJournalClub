@@ -143,28 +143,11 @@ class Schedule(models.Model):
         # got any?
         return None if len(next_times) == 0 else min([t for t in next_times])
 
-    @staticmethod
-    def all_next_meeting():
-        """Returns a Meeting object for the next meeting for all schedules."""
-
-        # get next meeting time and its schedule
-        dt, schedule = Schedule.all_next_meeting_time()
-
-        # get or create meeting
-        return Meeting.objects.get_or_create(schedule=schedule, time=dt)[0]
-
-
-class Meeting(models.Model):
-    """A single meeting"""
-
-    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
-    time = models.DateTimeField('Date and time of meeting.')
-
 
 class Vote(models.Model):
     """A vote for a publication."""
 
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_index=True)
     time = models.DateTimeField('Time of vote.', auto_now_add=True)
+    present = models.BooleanField('Whether user wants to present paper.', default=False)

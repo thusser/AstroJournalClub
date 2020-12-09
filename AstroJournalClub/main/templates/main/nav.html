@@ -10,15 +10,15 @@
             <li class="nav-item {% if request.resolver_match.url_name == "publications" %}active{% endif %}">
                 <a class="nav-link" href="{% url 'main:publications' %}">
                     Publications
-                    {% if request.resolver_match.url_name != "next" %}
+                    {% if request.resolver_match.url_name == "publications" %}
                         <span class="sr-only">(current)</span>
                     {% endif %}
                 </a>
             </li>
-            <li class="nav-item {% if request.resolver_match.url_name == "meetings" %}active{% endif %}">
-                <a class="nav-link" href="{% url 'main:meetings' %}">
+            <li class="nav-item {% if request.resolver_match.url_name == "meeting" %}active{% endif %}">
+                <a class="nav-link" href="{% url 'main:meeting' %}">
                     Meetings
-                    {% if request.resolver_match.url_name == "next" %}
+                    {% if request.resolver_match.url_name == "meeting" %}
                         <span class="sr-only">(current)</span>
                     {% endif %}
                 </a>
