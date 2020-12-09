@@ -14,8 +14,7 @@ var app = new Vue({
     methods: {
         vote: function (pub, updown) {
             // get date and URL
-            let date = pub.date.replace(/-/g, '/');
-            let url = '/api/' + date + '/' + pub.identifier + '/vote';
+            let url = '/api/' + pub.date + '/' + pub.identifier + '/vote';
 
             // do request
             this.$http.get(url).then(function (response) {

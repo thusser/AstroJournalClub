@@ -21,7 +21,7 @@
     <script>
         calendar = $('#datepicker').datepicker()
             .on('changeDate', (event) => {
-                $(location).attr('href', '/' + event.format('yyyy/mm/dd') + '/');
+                $(location).attr('href', '/publications/' + event.format('yyyy-mm-dd') + '/');
             });
     </script>
 
