@@ -83,4 +83,4 @@ def meeting(request):
     time, _ = Schedule.all_next_meeting_time()
 
     # render page
-    return render(request, 'main/meetings.html', context={'date': time, 'publications': json.dumps(pubs)})
+    return render(request, 'main/meeting.html', context={'date': time, 'publications': json.dumps(pubs)})
