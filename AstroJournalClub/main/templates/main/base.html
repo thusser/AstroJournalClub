@@ -1,5 +1,5 @@
 <!doctype html>
-{% load static %}
+{% load static version %}
 <html>
 <head>
     <title>AstroJournalClub</title>
@@ -21,9 +21,10 @@
     {% endblock %}
 </div>
 
-<script>
-
-</script>
-
+<footer class="bg-danger">
+    AstroJournalClub v{% version %}
+    (<a href="https://github.com/thusser/AstroJournalClub">GitHub</a>)
+    by <a href="mailto:thusser@uni-goettingen.de">Tim-Oliver Husser</a>
+</footer>
 </body>
 </html>

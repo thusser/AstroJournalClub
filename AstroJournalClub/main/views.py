@@ -25,7 +25,8 @@ def publications(request, year=None, month=None, day=None):
     data = [pub.to_dict(request.user) for pub in Publication.objects.filter(date=date)]
 
     # render page
-    return render(request, 'main/publications.html', context={'date': date, 'publications': json.dumps(data)})
+    return render(request, 'main/publications.html', context={'date': date,
+                                                              'publications': json.dumps(data)})
 
 
 @login_required

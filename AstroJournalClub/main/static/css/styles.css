@@ -1,5 +1,25 @@
+html {
+    height: 100%;
+}
+
 body {
+    height: 100%;
     background-color: #eeeeee;
+}
+
+footer {
+    color: #dddddd;
+    text-align: center;
+    position: relative;
+    margin-top: -40px; /* negative value of footer height */
+    height: 40px;
+    clear: both;
+    padding-top: 0.5em;
+    font-size: smaller;
+}
+
+footer a {
+    color: #dddddd;
 }
 
 [v-cloak] {
@@ -19,8 +39,10 @@ body {
     font-weight: bold;
 }
 
-.container {
-    margin-top: 1em;
+#main {
+    margin-top: 20px;
+    overflow: auto;
+    padding-bottom: 50px;
 }
 
 .card {
