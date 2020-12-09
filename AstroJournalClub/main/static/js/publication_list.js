@@ -2,7 +2,6 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
-        message: 'Hello Vue2!',
         publications: [],
         categoryFilter: ['astro-ph', 'astro-ph.CO', 'astro-ph.EP', 'astro-ph.GA',
             'astro-ph.HE', 'astro-ph.IM', 'astro-ph.SR']
@@ -10,6 +9,7 @@ var app = new Vue({
     created: function () {
         // take publications
         this.publications = publications;
+        console.log(this.publications);
     },
     methods: {
         vote: function (pub, updown) {
@@ -22,6 +22,24 @@ var app = new Vue({
                 let b = response.body;
                 pub.votes = b.votes;
                 pub.has_voted = b.has_voted;
+                pub.wants_present = b.wants_present;
+                pub.presenters = b.presenters;
+            }, function (response) {
+                alert("Error on vote");
+            });
+        },
+        present: function (pub, updown) {
+            // get date and URL
+            let url = '/api/' + pub.date + '/' + pub.identifier + '/present';
+
+            // do request
+            this.$http.get(url).then(function (response) {
+                // set from response
+                let b = response.body;
+                pub.votes = b.votes;
+                pub.has_voted = b.has_voted;
+                pub.wants_present = b.wants_present;
+                pub.presenters = b.presenters;
             }, function (response) {
                 alert("Error on vote");
             });

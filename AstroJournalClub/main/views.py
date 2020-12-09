@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import redirect, render
 import json
 import datetime
@@ -44,8 +44,29 @@ def vote(request, year, month, day, identifier):
         Vote.objects.get_or_create(publication=pub, user=request.user)
 
     # return number of votes and has_voted
-    return JsonResponse({'votes': pub.vote_set.count(),
-                         'has_voted': any([request.user == v.user for v in pub.vote_set.all()])})
+    return JsonResponse(pub.extras(request.user))
+
+
+@login_required
+def present(request, year, month, day, identifier):
+    # build date
+    date = datetime.datetime(year=year, month=month, day=day)
+
+    # get publication
+    pub = Publication.objects.get(date=date, identifier=identifier)
+
+    # vote must exist
+    try:
+        vote = Vote.objects.get(publication=pub, user=request.user)
+    except Vote.DoesNotExist:
+        raise Http404
+
+    # present or not?
+    vote.present = not vote.present
+    vote.save()
+
+    # return number of votes and has_voted
+    return JsonResponse(pub.extras(request.user))
 
 
 def meeting(request):

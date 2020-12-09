@@ -87,22 +87,47 @@
 
             <div class="row card-text">
 
-                <div class="col-2 text-center">
+                <div class="col-3">
                     {% if user.is_authenticated %}
-                        <p><span class="votes">[[ pub.votes ]]</span><br>votes</p>
-                        <button v-if="!pub.has_voted" class="button btn-sm btn-primary"
-                                v-on:click="vote(pub, +1)">Vote
-                        </button>
-                        <button v-if="pub.has_voted" class="button btn-sm btn-primary"
-                                v-on:click="vote(pub, -1)">Unvote
-                        </button>
+                        <div class="row">
+                            <div class="col-8 text-center">
+                                <p><span class="votes">[[ pub.votes ]]</span><br>votes</p>
+                            </div>
+                            <div class="col-4">
+                                <button v-if="!pub.has_voted" class="button btn-sm btn-success"
+                                        v-on:click="vote(pub, +1)">
+                                    <img src="{% static 'images/thumbs-up-solid.svg' %}"
+                                         alt="Vote up" width="16" height="16">
+                                </button>
+                                <button v-if="pub.has_voted" class="button btn-sm btn-danger"
+                                        v-on:click="vote(pub, -1)">
+                                    <img src="{% static 'images/thumbs-down-solid.svg' %}"
+                                         alt="Vote down" width="16" height="16">
+                                </button>
+                                <br />
+                                <button v-if="!pub.wants_present & pub.has_voted" class="button btn-sm btn-success"
+                                        v-on:click="present(pub, +1)">
+                                    <img src="{% static 'images/volume-up-solid.svg' %}"
+                                         alt="Want to present" width="16" height="16">
+                                </button>
+                                <button v-if="pub.wants_present" class="button btn-sm btn-danger"
+                                        v-on:click="present(pub, -1)">
+                                    <img src="{% static 'images/volume-mute-solid.svg' %}"
+                                         alt="Do not want to present" width="16" height="16">
+                                </button>
+                            </div>
+                        </div>
+                        <p class="presenters" v-if="pub.presenters.length > 0">
+                            <strong>Presenters:</strong><br />
+                            [[ pub.presenters.join(', ') ]]
+                        </p>
                     {% else %}
                         <p>
                             <a href="{% url 'accounts:login' %}">Login</a> to vote.
                         </p>
                     {% endif %}
                 </div>
-                <div class="col-9">
+                <div class="col-8">
                     <p>
                         <span v-for="(author, index) in pub.authors">
                             <span v-html="author"></span><span v-if="index+1 < pub.authors.length">, </span>

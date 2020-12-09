@@ -52,11 +52,20 @@ class Publication(models.Model):
 
         # private stuff
         if user.is_authenticated:
-            data['votes'] = self.vote_set.count()
-            data['has_voted'] = any([user == v.user for v in self.vote_set.all()])
+            # get extra fields
+            for k, v in self.extras(user).items():
+                data[k] = v
 
         # finished
         return data
+
+    def extras(self, user: User):
+        return {
+            'votes': self.vote_set.count(),
+            'has_voted': any([user == v.user for v in self.vote_set.all()]),
+            'wants_present': any([user == v.user and v.present for v in self.vote_set.all()]),
+            'presenters': [v.user.username for v in self.vote_set.all() if v.present]
+        }
 
     @property
     def authors(self) -> List[Author]:

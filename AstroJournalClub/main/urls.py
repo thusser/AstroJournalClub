@@ -25,5 +25,6 @@ urlpatterns = [
     path('meeting/', views.meeting, name='meeting'),
     path('publications/', views.publications, name='publications'),
     path('publications/<int:year>-<int:month>-<int:day>/', views.publications, name='publications'),
-    path('api/<int:year>-<int:month>-<int:day>/<str:identifier>/vote', views.vote, name='vote')
+    path('api/<int:year>-<int:month>-<int:day>/<str:identifier>/vote', views.vote, name='vote'),
+    path('api/<int:year>-<int:month>-<int:day>/<str:identifier>/present', views.present, name='present')
 ]
